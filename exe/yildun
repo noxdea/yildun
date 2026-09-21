@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "optparse"
+require "yildun"
+
+options = {columns: 80, rows: 24, timeout: 0.2}
+OptionParser.new do |parser|
+  parser.banner = "Usage: yildun [options]"
+  parser.on("--command COMMAND", "shell command") { |value| options[:command] = value }
+  parser.on("--columns N", Integer) { |value| options[:columns] = value }
+  parser.on("--rows N", Integer) { |value| options[:rows] = value }
+  parser.on("--headless", "print the terminal screen and exit") { options[:headless] = true }
+  parser.on("--script PATH", "send script contents to the shell") { |value| options[:script] = value }
+  parser.on("--expect PATH", "compare the headless screen with a file") { |value| options[:expect] = value }
+  parser.on("--version") { puts Yildun::VERSION; exit }
+end.parse!
+
+settings = Yildun::Settings.load
+profile = options[:command] ? Yildun::Profile.new("command", [options[:command]], {}, Dir.pwd) : Yildun.profile(settings)
+begin
+  app = Yildun::App.new(settings: settings, profile: profile, columns: options[:columns], rows: options[:rows])
+  terminal = app.active_terminal
+  terminal.input(File.binread(options[:script])) if options[:script]
+
+  if options[:headless]
+    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + options[:timeout]
+    terminal.pump(timeout: 0.05) while Process.clock_gettime(Process::CLOCK_MONOTONIC) < deadline && terminal.session.alive?
+    output = terminal.screen.text
+    if options[:expect]
+      expected = File.read(options[:expect]).strip
+      abort "headless output did not match #{options[:expect]}" unless output.strip == expected
+    end
+    puts output
+  else
+    warn "Yildun currently runs the terminal core in headless mode; use --headless for scripted sessions."
+  end
+ensure
+  app&.active_tab&.close
+end
