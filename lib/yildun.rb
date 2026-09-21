@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+require_relative "yildun/version"
+require_relative "yildun/data_compat"
+require_relative "yildun/settings"
+require_relative "yildun/keymap"
+require_relative "yildun/theme"
+require_relative "yildun/profile"
+require_relative "yildun/search"
+require_relative "yildun/links"
+require_relative "yildun/terminal"
+require_relative "yildun/console"
+require_relative "yildun/tab"
+require_relative "yildun/pane"
+require_relative "yildun/session"
+require_relative "yildun/app"

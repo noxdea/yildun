@@ -1,0 +1,86 @@
+module Yildun
+  VERSION: String
+  class Settings
+    attr_reader values: Hash[String, untyped]
+    def initialize: (?Hash[untyped, untyped] values) -> void
+    def []: (String key) -> untyped
+    def fetch: (String key, ?untyped default) -> untyped
+    def profile: (?String name) -> Hash[String, untyped]
+    def self.load: (?String path) -> Settings
+    def self.default_path: () -> String
+    def self.parse_jsonc: (String text) -> Hash[untyped, untyped]
+  end
+  class Keymap
+    def initialize: (?Hash[untyped, untyped] bindings) -> void
+    def command: (String key) -> String?
+    def include?: (String key) -> bool
+  end
+  class Terminal
+    attr_reader session: untyped
+    def initialize: (command: String | Array[String], ?env: Hash[String, String], ?cwd: String, ?columns: Integer, ?rows: Integer, ?scrollback_limit: Integer, ?session: untyped) -> void
+    def screen: () -> untyped
+    def cwd: () -> String
+    def commands: () -> Array[untyped]
+    def failed_commands: () -> Array[untyped]
+    def input: (String bytes) -> untyped
+    def paste: (String text) -> untyped
+    def key: (String name, **bool modifiers) -> untyped
+    def mouse: (**untyped event) -> untyped
+    def pump: (?timeout: Numeric) -> bool
+    def resize: (columns: Integer, rows: Integer) -> untyped
+    def focus: (active: bool) -> String
+    def search: (String query, ?regex: bool) -> Array[Hash[Symbol, untyped]]
+    def previous_command: () -> untyped
+    def next_command: () -> untyped
+    def last_command: () -> untyped
+    def command_output: (untyped command) -> String
+    alias copy_command_output command_output
+    def selection: (Array[Integer] start, Array[Integer] finish, ?history: bool) -> String
+    def search_commands: (String query, ?regex: bool) -> Array[untyped]
+    def close: () -> untyped
+  end
+
+  class Console
+    def initialize: (untyped terminal, ?input: untyped, ?output: untyped) -> void
+    def run: () -> untyped
+    def render: () -> untyped
+  end
+
+  class Pane
+    attr_reader children: Array[untyped]
+    attr_reader orientation: Symbol
+    def initialize: (?untyped tab, ?orientation: Symbol) -> void
+    def leaf?: () -> bool
+    def split: (untyped tab, ?orientation: Symbol) -> Pane
+  end
+
+  class Search
+    def initialize: (untyped terminal) -> void
+    def call: (String query, ?regex: bool) -> untyped
+  end
+
+  module Links
+    def self.at: (untyped screen, Integer row, Integer column, ?cwd: String) -> Hash[Symbol, untyped]?
+    def self.open: (String url, ?opener: ^(String) -> untyped) -> untyped
+  end
+
+  class SessionState
+    def self.save: (String path, tabs: Array[untyped]) -> untyped
+    def self.load: (String path) -> Array[Hash[String, untyped]]
+  end
+  class Tab
+    attr_reader title: String
+    attr_reader terminal: Terminal
+  end
+  class App
+    attr_reader settings: Settings
+    attr_reader tabs: Array[Tab]
+    attr_reader active_index: Integer
+    def initialize: (?settings: Settings, ?profile: untyped, ?columns: Integer, ?rows: Integer) -> void
+    def active_tab: () -> Tab
+    def active_terminal: () -> Terminal
+    def open_tab: (?profile: untyped, ?cwd: String, ?columns: Integer, ?rows: Integer) -> Tab
+    def open_tab_here: (?profile: untyped, ?columns: Integer, ?rows: Integer) -> Tab
+    def close_active: () -> untyped
+  end
+end
