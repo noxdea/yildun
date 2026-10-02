@@ -25,6 +25,8 @@ state, scrollback search, and links while keeping the terminal session
 available for scripted integration tests. The name comes from δ Ursae Minoris
 and the Turkish *yıldız*, “star.”
 
+![Yildun terminal output from running Ruby commands](docs/media/overview.png)
+
 ## Features
 
 - Tarazed-backed terminal sessions with profiles and tabs
