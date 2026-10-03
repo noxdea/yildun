@@ -1,0 +1,46 @@
+title: Yildun
+description: Run a terminal session, configure shell profiles, and check scripted output.
+url: https://noxdea.github.io
+baseurl: /yildun
+repository: noxdea/yildun
+markdown: kramdown
+plugins:
+  - jekyll-relative-links
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+defaults:
+  - scope:
+      path: docs
+    values:
+      layout: guide
+guide:
+  - title: Getting started
+    url: /docs/
+  - title: Using the terminal
+    url: /docs/usage.html
+  - title: Headless sessions
+    url: /docs/headless.html
+  - title: Settings and profiles
+    url: /docs/configuration.html
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - Rakefile
+  - yildun.gemspec
+  - yildun-0.1.0.gem
+  - README.md
+  - CHANGELOG.md
+  - LICENSE.txt
+  - bench
+  - bin
+  - demo
+  - docs/adr
+  - exe
+  - lib
+  - pkg
+  - sig
+  - spec
+  - test
+  - tools
+  - tmp
